@@ -1,0 +1,11 @@
+{
+  "index": "Home 🏁",
+  "system-design": "system 설계",
+  "member": "dailyfeed-member",
+  "kafka": "kafka 사용 방식 소개",
+  "faign-circuitbreaker-retryer-ratelimiter": "faign, CircuitBreaker,Retryer,Ratelimiter",
+  "installer": "설치 스크립트 (Installer)",
+  "batch-with-cronjob": "Batch, Cronjob 소개",
+  "coding-convention": "코딩컨벤션 (Coding Convention)",
+  "project-review": "Project를 돌아보기"
+}

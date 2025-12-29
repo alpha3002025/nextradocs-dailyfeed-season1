@@ -1,0 +1,100 @@
+:root {
+  /* Vue Green */
+  --nextra-primary-hue: 153deg;
+  --nextra-primary-saturation: 47%;
+}
+
+.nextra-nav-container nav a svg {
+  /* Custom logo style if needed */
+}
+
+/* Global Code Line Styles for Viewer/Public Pages */
+.code-line {
+  display: block;
+  padding: 0 1rem;
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  margin: 0 -1rem;
+  /* Counteract padding if necessary, depends on Nextra's pre padding */
+}
+
+/* Nextra usually puts code inside pre, inside div. 
+   We might need to target the span/div that SyntaxHighlighter produces if we use it, 
+   but Nextra uses Shiki/Prism internally which renders spans or lines. 
+   
+   If we are injecting our own interaction logic (like in _app.tsx), we need to ensure the structure matches.
+   The user wants the feature on public pages.
+   Nextra renders code blocks as table rows or spans usually.
+   
+   If we want to enable this feature on public pages served by Nextra, we need to inspect how Nextra renders code.
+   Nextra uses Shiki by default which renders strict HTML.
+   To support click/hover on lines, we likely need to inject JS to handle events on the rendered lines.
+   
+   The `CodeBlockEnhancer` in `_app.tsx` mostly handles copy buttons.
+   We can extend it to handle line clicks/hovers.
+*/
+
+/* Styles for the enhanced lines injected by JS */
+.enhanced-code-line {
+  display: block;
+  padding: 2px 16px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.enhanced-code-line:hover {
+  background-color: rgba(66, 184, 131, 0.1);
+  border-left-color: #42b883;
+}
+
+.enhanced-code-line.active {
+  background-color: rgba(66, 184, 131, 0.2);
+  border-left-color: #33a06f;
+}
+
+/* Global Markdown Styles (Preview & Viewer) */
+blockquote {
+  border-left: 4px solid #42b883;
+  background-color: #f0f8f5;
+  color: #666;
+  font-style: italic;
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Ensure Nextra/Prose overrides don't hide this */
+/* Ensure Nextra/Prose overrides don't hide this */
+.nx-prose blockquote,
+.prose blockquote,
+.nextra-content blockquote {
+  border-left-color: #42b883 !important;
+  background-color: #f0f8f5 !important;
+  color: #666 !important;
+  padding: 0.5em 1em !important;
+  font-style: italic !important;
+  quotes: none !important;
+  /* Remove standard quotes if unwanted */
+}
+
+/* Inline Code Style - Vue Green Theme */
+/* Target code elements that are NOT inside pre, NOT inside the editor's code block wrapper, and do NOT have a language class (common for blocks) */
+.nx-prose :not(pre)>code:not([class*="language-"]),
+.prose :not(pre)>code:not([class*="language-"]),
+.nextra-content :not(pre)>code:not([class*="language-"]),
+code:not(pre code):not([class*="language-"]) {
+  color: #42b883 !important;
+  background-color: rgba(66, 184, 131, 0.1) !important;
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-weight: 600;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Ensure editor code blocks are protected if they fall through (e.g. text/plain blocks) */
+.codeBlockWrapper code {
+  color: inherit !important;
+  background-color: transparent !important;
+}

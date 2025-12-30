@@ -1,0 +1,7 @@
+{
+  "jwt-management": "JWT 관리",
+  "authentication-flow": "인증 흐름",
+  "logout-and-blacklist": "Logout 과 Blacklist 기능",
+  "authentication-validation-between-service-communication": "서비스간 통신 시 인증 유효성 체크",
+  "authentication-validation-using-argument-resolver": "ArgumentResolver 기반 인증 유효성 체크"
+}

@@ -1,0 +1,10 @@
+{
+  "index": "Readme",
+  "introduce": "kafka 사용시 문제 소개",
+  "process-kafka-failure": "카프카 통신 실패시 처리 대책",
+  "producer-acks-and-consumer-offset-commit": "Producer Ack 설정, Consumer Offset Commit 설정",
+  "checking-duplicated-message": "중복 메시지 체크 방식",
+  "date-pattern-topic": "날짜 별 토픽 운영",
+  "publish-type": "publish-type 으로 kafka,feign 통신방식 선택",
+  "kafka-support-module": "kafka-support 모듈"
+}

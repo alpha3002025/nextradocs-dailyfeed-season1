@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import styles from '../../styles/Editor.module.css'
 import {
     Bold, Italic, Heading1, Heading2, List, ListOrdered,
-    Quote, Link as LinkIcon, Image as ImageIcon, Code,
+    Quote, Link as LinkIcon, Image as ImageIcon, Code, Strikethrough, Braces,
     FileText, Menu, ChevronLeft, Save, Plus, Copy, X, ArrowLeft
 } from 'lucide-react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -160,6 +160,7 @@ export default function Editor() {
     const [posts, setPosts] = useState<FileNode[]>([])
     const [currentPost, setCurrentPost] = useState<string | null>(null)
     const [content, setContent] = useState('')
+    const [initialContent, setInitialContent] = useState('')
     const [status, setStatus] = useState('')
     const [isSidebarOpen, setSidebarOpen] = useState(true)
     const [toastMsg, setToastMsg] = useState('')
@@ -343,6 +344,7 @@ export default function Editor() {
         if (res.ok) {
             const data = await res.json()
             setContent(data.content)
+            setInitialContent(data.content)
             router.push(`/admin/editor?open=${slug}`, undefined, { shallow: true })
         }
     }
@@ -357,6 +359,7 @@ export default function Editor() {
         })
         if (res.ok) {
             setStatus('Saved')
+            setInitialContent(content)
             setTimeout(() => setStatus(''), 2000)
             window.dispatchEvent(new CustomEvent('show-toast', { detail: 'Saved successfully' }))
         } else {
@@ -389,7 +392,10 @@ export default function Editor() {
 
         if (res.ok) {
             const { filename } = await res.json()
-            insertText(`![](./img/${filename})`)
+
+            const docName = currentPost.split('/').pop()?.replace(/\.(md|mdx)$/, '') || '';
+            const imagePath = (currentPost === 'home' || !docName) ? `./img/${filename}` : `./img/${docName}/${filename}`;
+            insertText(`![](${imagePath})`)
             setStatus('Image uploaded')
         } else {
             setStatus('Upload failed')
@@ -420,7 +426,10 @@ export default function Editor() {
 
         if (res.ok) {
             const { filename } = await res.json()
-            insertText(`![](./img/${filename})`)
+
+            const docName = currentPost.split('/').pop()?.replace(/\.(md|mdx)$/, '') || '';
+            const imagePath = (currentPost === 'home' || !docName) ? `./img/${filename}` : `./img/${docName}/${filename}`;
+            insertText(`![](${imagePath})`)
             setStatus('Image uploaded')
             window.dispatchEvent(new CustomEvent('show-toast', { detail: 'Image uploaded successfully' }))
         } else {
@@ -449,7 +458,10 @@ export default function Editor() {
 
                 if (res.ok) {
                     const { filename } = await res.json();
-                    insertText(`![](./img/${filename})`);
+
+                    const docName = currentPost.split('/').pop()?.replace(/\.(md|mdx)$/, '') || '';
+                    const imagePath = (currentPost === 'home' || !docName) ? `./img/${filename}` : `./img/${docName}/${filename}`;
+                    insertText(`![](${imagePath})`);
                     setStatus('Image uploaded');
                     window.dispatchEvent(new CustomEvent('show-toast', { detail: 'Image uploaded successfully' }));
                 } else {
@@ -457,6 +469,41 @@ export default function Editor() {
                     window.dispatchEvent(new CustomEvent('show-toast', { detail: 'Upload failed' }));
                 }
             }
+        }
+    };
+
+    const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        const textarea = e.currentTarget;
+        const { selectionStart, selectionEnd } = textarea;
+        const hasSelection = selectionStart !== selectionEnd;
+
+        // Map of keys to their wrapping pairs
+        const keyMap: { [key: string]: [string, string] } = {
+            '(': ['(', ')'],
+            '{': ['{', '}'],
+            '[': ['[', ']'],
+            '`': ['`', '`'],
+            '"': ['"', '"'],
+            "'": ["'", "'"]
+        };
+
+        if (hasSelection && keyMap[e.key]) {
+            e.preventDefault();
+            const [open, close] = keyMap[e.key];
+            const text = content;
+            const newText = text.substring(0, selectionStart) +
+                open + text.substring(selectionStart, selectionEnd) + close +
+                text.substring(selectionEnd);
+
+            setContent(newText);
+
+            // Restore selection to the original inner text (now wrapped)
+            setTimeout(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.selectionStart = selectionStart + 1;
+                    textareaRef.current.selectionEnd = selectionEnd + 1;
+                }
+            }, 0);
         }
     };
 
@@ -500,6 +547,12 @@ export default function Editor() {
             case 'italic':
                 newText = text.substring(0, start) + `*${selectedText}*` + text.substring(end)
                 break
+            case 'strikethrough':
+                newText = text.substring(0, start) + `~${selectedText}~` + text.substring(end)
+                break
+            case 'inline-code':
+                newText = text.substring(0, start) + `\`${selectedText}\`` + text.substring(end)
+                break
             case 'h1':
                 newText = text.substring(0, start) + `# ${selectedText}` + text.substring(end)
                 break
@@ -507,7 +560,7 @@ export default function Editor() {
                 newText = text.substring(0, start) + `## ${selectedText}` + text.substring(end)
                 break
             case 'quote':
-                newText = text.substring(0, start) + `> ${selectedText}` + text.substring(end)
+                newText = text.substring(0, start) + selectedText.split('\n').map(line => `> ${line}`).join('\n') + text.substring(end)
                 break
             case 'code':
                 newText = text.substring(0, start) + `\`\`\`\n${selectedText}\n\`\`\`` + text.substring(end)
@@ -517,7 +570,7 @@ export default function Editor() {
                 newText = text.substring(0, start) + `[${linkText}](url)` + text.substring(end)
                 break
             case 'list':
-                newText = text.substring(0, start) + `- ${selectedText}` + text.substring(end)
+                newText = text.substring(0, start) + selectedText.split('\n').map(line => `- ${line}`).join('\n') + text.substring(end)
                 break
         }
 
@@ -921,6 +974,36 @@ export default function Editor() {
                                 <button className={styles.cancelBtn} onClick={async () => {
                                     if (!currentPost) return;
 
+                                    // Revert content to initial state and cleanup any images uploaded during this session
+                                    // by saving the initial content. The server-side logic cleans up images not used in the saved content.
+                                    if (initialContent !== content) {
+                                        await fetch(`/api/post?slug=${currentPost}`, {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ content: initialContent }) // Revert to initial
+                                        });
+                                    } else {
+                                        // Even if content didn't change, we might want to trigger cleanup just in case?
+                                        // But usually if content didn't change, no new images were added meaningfully or they were already there.
+                                        // However, if user uploaded image A, then deleted it from text, then uploaded B. Content matches initial? No.
+                                        // If user uploaded image A, then deleted it. Content matches initial. Image A is orphaned.
+                                        // So we should probably always sync/cleanup if we want to be strict, or just trust the daily/periodic cleanup?
+                                        // The user said "Back 버튼 클릭시 클릭 직전 까지 수정을 위해 업로드한 이미지는 삭제하도록 하세요."
+                                        // If I uploaded an image but didn't save, it is on the server.
+                                        // If I hit Back, I want that image gone.
+                                        // Saving 'initialContent' achieves this because that image is not in 'initialContent'.
+
+                                        // Edge case: what if I uploaded an image, then deleted the line from editor?
+                                        // Content matches initial (roughly). 
+                                        // But the image file is there.
+                                        // So yes, saving initialContent is safe and robust.
+                                        await fetch(`/api/post?slug=${currentPost}`, {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ content: initialContent })
+                                        });
+                                    }
+
                                     // Check if file still exists via API
                                     try {
                                         const res = await fetch(`/api/post?slug=${currentPost}`);
@@ -974,6 +1057,12 @@ export default function Editor() {
                         <button className={styles.toolBtn} onClick={() => formatText('italic')} title="Italic">
                             <Italic size={18} />
                         </button>
+                        <button className={styles.toolBtn} onClick={() => formatText('strikethrough')} title="Strikethrough">
+                            <Strikethrough size={18} />
+                        </button>
+                        <button className={styles.toolBtn} onClick={() => formatText('inline-code')} title="Inline Code">
+                            <Braces size={18} />
+                        </button>
                         <button className={styles.toolBtn} onClick={() => formatText('h1')} title="Heading 1">
                             <Heading1 size={18} />
                         </button>
@@ -1024,6 +1113,7 @@ export default function Editor() {
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
                                     onPaste={handlePaste}
+                                    onKeyDown={handleTextareaKeyDown}
                                     placeholder="Start writing..."
                                 />
                             </div>

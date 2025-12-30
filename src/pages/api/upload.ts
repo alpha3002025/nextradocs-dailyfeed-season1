@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         imgDir = path.join(process.cwd(), 'src/pages/img')
     } else {
         let postDir = path.join(PAGES_DIR, slug as string)
-        
+
         // If postDir is not a directory, check if it is a file-based slug
         let isFile = false;
         try {
@@ -44,20 +44,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         if (isFile) {
+            const ext = path.extname(postDir);
+            const name = path.basename(postDir, ext);
             postDir = path.dirname(postDir);
+            imgDir = path.join(postDir, 'img', name);
+        } else {
+            // For directory-based slugs (index.md), we also want to separate images by the "docName" 
+            // which in this case is the directory name itself.
+            const dirName = path.basename(postDir);
+            imgDir = path.join(postDir, 'img', dirName);
         }
 
-        imgDir = path.join(postDir, 'img') 
-        
         // Create imgDir if it doesn't exist
         if (!fs.existsSync(imgDir)) {
-             // Create recursively
-             try {
+            // Create recursively
+            try {
                 fs.mkdirSync(imgDir, { recursive: true });
-             } catch (e) {
+            } catch (e) {
                 console.error('Failed to create img dir', e);
                 return res.status(500).json({ error: 'Failed to create image directory' });
-             }
+            }
         }
     }
 

@@ -81,46 +81,49 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // Cleanup unused images
         try {
-            if (fs.existsSync(imgDir)) {
-                // Find all used images in ALL markdown files in the same directory
-                const usedImages = new Set<string>();
-                const regex = /\((\.\/)?img\/([^)]+)\)/g;
+            // Determine the specific image subdirectory for this post
+            let specificImgDir: string;
 
-                // 1. Scan the current file content being saved
+            // Check if filePath is index file in a directory or a standalone file
+            const fileName = path.basename(filePath);
+            if (fileName === 'index.md' || fileName === 'index.mdx') {
+                // For index files, the "docName" is the directory name
+                const dirName = path.basename(dir);
+                specificImgDir = path.join(imgDir, dirName);
+            } else {
+                // For other files, docName is filename without extension
+                const docName = fileName.replace(/\.(md|mdx)$/, '');
+                specificImgDir = path.join(imgDir, docName);
+            }
+
+            if (fs.existsSync(specificImgDir)) {
+                // Find used images in CURRENT file content
+                const usedImages = new Set<string>();
+
+                // Matches ![] (./img/docName/filename.png) or purely filename if somehow relative
+                // We expect ./img/docName/xxxx.png
+                // We want to capture xxxx.png
+                // The regex needs to handle the path prefix
+                // Regex for standard format: (./img/docName/filename)
+
+                // Construct regex based on docName to be precise? 
+                // Alternatively, just capture the filename at the end of ./img/.../ paths
+                const regex = /img\/[^)]+\/([^/)]+)\)/g;
+
                 let match;
                 while ((match = regex.exec(content)) !== null) {
-                    usedImages.add(match[2]);
+                    usedImages.add(match[1]); // match[1] is the filename
                 }
 
-                // 2. Scan other MD/MDX files in the same directory (where the images are)
-                // 'dir' is the directory containing the markdown file(s) and the 'img' folder
-                const siblingFiles = fs.readdirSync(dir).filter(f => /\.(md|mdx)$/.test(f));
-
-                siblingFiles.forEach(file => {
-                    // Skip the current file as we already processed the *new* content above
-                    // We must compare full paths or filenames. 
-                    const fullAuthPath = path.join(dir, file);
-                    if (fullAuthPath === filePath) return;
-
-                    try {
-                        const otherContent = fs.readFileSync(fullAuthPath, 'utf8');
-                        while ((match = regex.exec(otherContent)) !== null) {
-                            usedImages.add(match[2]);
-                        }
-                    } catch (readErr) {
-                        console.error(`Failed to read sibling file ${file} for image cleanup ref check`, readErr);
-                    }
-                });
-
-                const allImages = fs.readdirSync(imgDir);
+                const allImages = fs.readdirSync(specificImgDir);
                 allImages.forEach(file => {
                     // Filter only image files to be safe
                     if (/\.(png|jpg|jpeg|gif|svg|webp)$/i.test(file)) {
                         if (!usedImages.has(file)) {
                             // Delete unused
                             try {
-                                fs.unlinkSync(path.join(imgDir, file));
-                                console.log(`Deleted unused image: ${file}`);
+                                fs.unlinkSync(path.join(specificImgDir, file));
+                                console.log(`Deleted unused image: ${file} from ${specificImgDir}`);
                             } catch (err) {
                                 console.error(`Failed to delete unused image ${file}`, err);
                             }

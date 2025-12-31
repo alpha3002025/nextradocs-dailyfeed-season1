@@ -1,0 +1,5 @@
+{
+  "dailyfeed-feign-module": "dailyfeed-feign 모듈",
+  "feign-helper-feign-client-feign-response-handler": "FeignHelper,FeignClient,FeignResponseHandler",
+  "circuitbreaker-retryer-ratelimiter": "CircuitBreaker, Retryer, Rate Limiter"
+}

@@ -1,0 +1,7 @@
+{
+  "module-design-principle": "모듈 구성 원칙",
+  "dailyfeed-code": "dailyfeed-code",
+  "mapper-component": "객체의 생성,변환을 담당하는 Mapper 컴포넌트",
+  "function-naming-convention-throwing-exception": "네이밍컨벤션 - 예외를 던지는 함수",
+  "from-boolean-return-to-enum-return": "boolean 반환형 대신 enum 반환형을 사용"
+}

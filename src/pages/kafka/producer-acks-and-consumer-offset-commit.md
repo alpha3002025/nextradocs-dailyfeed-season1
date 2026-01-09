@@ -3,14 +3,14 @@
 kafka 설정 시 여러가지 요소들이 있지만, 가장 핵심적인 요소는 Producer Acknowledgement, Consumer Offset 커밋 방식일 것이라고 생각합니다.
 dailfyeed 에서는 Producer Acknowledgement, Consumer Offset 커밋 방식을 다음과 같이 지정했습니다.<br/>
 
-`Producer Acknowledgement`
+**Producer Acknowledgement**
 - **Acks=1 선택**
 - 리소스/비용을 줄이기 위해 리더파티선 1기 까지만 운영하는 경우를 고려했습니다.
 - 리더파티션 까지만 복제되는 것을 보장합니다.
 <br/>
 
-`Consumer Offset` 커밋 방식
-- **`At Least Once` 를 선택했습니다.**
+**Consumer Offset 커밋 방식**
+- **At Least Once 를 선택**
 - 중복된 메시지를 받더라도 Redis 를 통해 중복 메시지를 체크하고, 데이터 저장 시에도 같은 메시지일 경우 upsert 하도록 지정했습니다.
 - `3. 중복 메시지 체크 방식` 문서에서 `메시지`를 고유하게 인식할 수 있는 `메시지 키`의 형식에 대해 정리합니다.
 <br/>
@@ -81,9 +81,8 @@ KafkaConfig.java 의 자세한 내용을 확인하고자 하신다면 [kafka-sup
 
 
 ## 참고
-혹시 kafka 에 대한 개념이 부족하시다면 https://alpha3002025.github.io/docs-kafka-summary/kafka-concepts/kafka-basic/ 을 참고해주세요.<br/>
-<br/>
+- 혹시 kafka 에 대한 개념이 부족하시다면 [alpha3002025.github.io/docs-kafka-summary/kafka-concepts/kafka-basic](https://alpha3002025.github.io/docs-kafka-summary/kafka-concepts/kafka-basic/) 을 참고해주세요.<br/>
 
-KafkaConfig.java 의 자세한 내용을 확인하고자 하신다면 [kafka-support 모듈](./6.kafka-support-모듈)페이지를 확인해주세요.<br/>
+- KafkaConfig.java 의 자세한 내용을 확인하고자 하신다면 [kafka-support 모듈](./kafka-support-module.md)페이지를 확인해주세요.<br/>
 <br/>
 

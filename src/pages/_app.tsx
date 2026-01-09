@@ -366,7 +366,7 @@ export default function App({ Component, pageProps }: AppProps) {
             ? children.map(c => typeof c === 'string' ? c : '').join('')
             : String(children || '');
 
-          const isRawLink = linkText.trim().includes(url.trim());
+          const isRawLink = linkText.trim().replace(/\/$/, '') === url.trim().replace(/\/$/, '');
 
           if (videoId && isRawLink) {
             return (

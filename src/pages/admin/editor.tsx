@@ -19,6 +19,9 @@ import rehypeRaw from 'rehype-raw'; // Support HTML in markdown
 import 'prismjs/themes/prism.css'; // Import base Prism styles
 import { YouTubeEmbed, getYouTubeId } from '@/components/YouTubeEmbed';
 import { LinkPreview } from '@/components/LinkPreview';
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 // Toast Component
 function Toast({ message }: { message: string }) {
@@ -52,6 +55,7 @@ function CodeBlock({ language, value }: { language: string, value: string }) {
                 language={language}
                 PreTag="div"
                 wrapLines={true}
+                wrapLongLines={true}
                 showLineNumbers={true}
                 lineNumberStyle={{ minWidth: '2.5em', paddingRight: '1em', color: '#6e7681', textAlign: 'right' }}
                 lineProps={(lineNumber: number) => {
@@ -837,7 +841,7 @@ export default function Editor() {
     }
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${inter.className}`}>
             <Head>
                 <title>Editor - Green Nextra</title>
             </Head>

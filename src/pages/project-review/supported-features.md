@@ -1,5 +1,5 @@
 # 프로젝트 리뷰 - 지원되는 기능들
-> obsidian (https://obsidian.md) 를 통해 현재 리포지터리 디렉터리를 열어서 확인하시면 조금 더 가독성 높게 내용을 파악하실수 있습니다.<br/>
+> [obsidian](https://obsidian.md) 을 통해 현재 리포지터리 디렉터리를 열어서 확인하시면 조금 더 가독성 높게 내용을 파악하실수 있습니다.<br/>
 
 <br/>
 
@@ -105,7 +105,7 @@ Istio를 사용하다보면 다양한 기능들을 지원한다는 사실에 놀
 <br/>
 
 
-# Resilience `feign`, `circuit breaker`, `rate limiter`, `retryer` 지원
+# Resilience feign, circuit breaker, rate limiter, retryer 지원
 소프트웨어 레벨인 서버 애플리케이션 레벨에서도 `circuit breaker`, `rate limiter` 를 지원하고 있습니다.<br/>
 
 ## `feign`, `circuit breaker`
@@ -130,7 +130,7 @@ Istio를 사용하다보면 다양한 기능들을 지원한다는 사실에 놀
 <br/>
 
 
-## `rate limiter`
+## rate limiter
 `rate limiter`는 현재 서비스에서 다른 마이크로서비스로 `feign` 을 통해 요청을 호출하는 outbound 요청의 빈도(rate)를 제한하는 기능입니다.<br/>
 
 `rate limiter` 를 사용하면 다음과 같은 장점이 있습니다.
@@ -149,7 +149,7 @@ Istio를 사용하다보면 다양한 기능들을 지원한다는 사실에 놀
 
 <br/>
 
-## `retryer`
+## retryer
 `retryer` 는 현재 서비스에서 다른 마이크로서비스로 `feign` 을 통해 요청을 호출시 에러 발생시 재시도 횟수, 재시도 전 timeout 정도, 어떤 Exception 에 대해 재시도할지 등에 대한 재시도 설정입니다.<br/>
 
 retryer 를 사용하면 다음의 장점들이 있습니다.

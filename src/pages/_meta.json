@@ -6,5 +6,6 @@
   "faign-circuitbreaker-retryer-ratelimiter": "Feign, CircuitBreaker,Retryer,Rate Limiter",
   "installer": "설치 스크립트 (Installer)",
   "coding-convention": "코딩컨벤션 (Coding Convention)",
-  "project-review": "Project Review"
+  "project-review": "Project Review",
+  "memo": "memo"
 }

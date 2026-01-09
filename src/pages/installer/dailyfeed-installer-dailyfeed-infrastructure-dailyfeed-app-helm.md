@@ -12,9 +12,9 @@ dailyfeed-installer
 ```
 <br/>
 
-**`dailyfeed-infrastructure`** 는 MySQL, MongoDB, Kafka, Redis 를 local, local-hybrid, dev 환경에 맞도록 설치하는 스크립트들을 관리하는 서브모듈입니다. https://github.com/alpha3002025/dailyfeed-infrastructure 에 개별 리포지터리가 존재하며 dailyfeed-installer (https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다.<br/>
+**`dailyfeed-infrastructure`** 는 MySQL, MongoDB, Kafka, Redis 를 local, local-hybrid, dev 환경에 맞도록 설치하는 스크립트들을 관리하는 서브모듈입니다. [dailyfeed-infrastructure](https://github.com/alpha3002025/dailyfeed-infrastructure) 에 개별 리포지터리가 존재하며 [dailyfeed-installer](https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다.<br/>
 
-**`dailyfeed-app-helm`** 은 모든 서비스 애플리케이션 들에 대한 helm 을 관리하는 프로젝트입니다. https://github.com/alpha3002025/dailyfeed-installer (https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다.<br/>
+**`dailyfeed-app-helm`** 은 모든 서비스 애플리케이션 들에 대한 helm 을 관리하는 프로젝트입니다. [dailyfeed-installer](https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다.<br/>
 <br/>
 
 각각의 shell script 를 호출하는 구조는 다음과 같습니다.<br/>
@@ -26,27 +26,24 @@ dailyfeed-installer
 
 
 
-# `dailyfeed-infrastructure`
-> Project Github : https://github.com/alpha3002025/dailyfeed-infrastructure
+## dailyfeed-infrastructure
+> Project Github : [dailyfeed-infrastructure](https://github.com/alpha3002025/dailyfeed-infrastructure)
 
 <br/>
 
 infrastructure 를 설치하는 과정에 대한 프로젝트입니다. `dailyfeed-infrastructure/install-local-hybrid.sh` 를 통해 infra 들이 설치되며 다음의 작업들을 수행합니다.<br/>
-- `Kind` 기반의 k8s 클러스터 설치
-- `MySQL, MongoDB, Kafka, Redis` 를 docker-compose 기반으로 설치
-- `Kind` 의 control plane 컨테이너, worker node 컨테이너 들을 docker-compose 네트워크에 connect
+- Kind 기반의 k8s 클러스터 설치
+- MySQL, MongoDB, Kafka, Redis 를 docker-compose 기반으로 설치
+- Kind 의 control plane 컨테이너, worker node 컨테이너 들을 docker-compose 네트워크에 connect
+
 <br/>
 
-**`install-local.sh` -`local` 설치 스크립트**<br/>
+
+
+**install-local-hybrid.sh**<br/>
 > 참고 : `dailyfeed-infrastructre/install-local.sh`<br/>
 
-개발 초반에는 `install-local.sh` 에 설치 스크립트를 작성했고, 이 스크립트 내에서는 MySQL, MongoDB, Kafka, Redis 를 모두 helm 으로 함께 kubernetes 클러스터 내에 함께 설치하도록 되어 있습니다. 하지만 이 방식은 kubernetes 내에 MySQL, MongoDB, Kafka, Redis 를 helm 으로 배포했기에 서비스 애플리케이션들과 클러스터의 리소스를 공유하게 되기에 애플리케이션의 정확한 리소스 사용량을 파악하기 쉽지 않다는 단점이 있었습니다. 또한 HPA 설정 시 인프라(MySQL, MongoDB, Kafka, Redis)와 서비스 애플리케이션 간 리소스 경합이 발생하기에 HPA 설정시 정확한 리소스 사용량 부여에 어려움을 겪게 되었습니다.<br/>
-
-즉, 인프라(MySQL, MongoDB, Kafka, Redis) 리소스와 서비스 애플리케이션 리소스 간 분리가 이뤄지지 않아서 서로에게 영향을 주는 현상이 있었습니다. 이런 이유로 아래에서 설명할 `install-local-hybrid.sh` 스크립트로의 전환 작업을 시작하게 됐습니다.<br/>
-<br/>
-
-**`install-local-hybrid.sh` - `local` ➝ `local-hybrid`**<br/>
-> 참고 : `dailyfeed-infrastructre/install-local.sh`<br/>
+`install-local.sh` 라는 이름의 install script 가 있었지만, MySQL, MongoDB, Kafka, Redis 의 경우 kubernetes 인프라로 설치하게 될 경우 애플리케이션과 리소스 경합이 발생하고 인프라 각각에 대한 Resources 에 대한  requests, limits 를 지정해줘야 하는 맹점으로 인해 install-local.sh 는 보류하고 install-local-hybrid.sh 를 새로 설정하게 되었습니다.<br/>
 
 이 방식은 인프라(MySQL, MongoDB, Kafka, Redis)는 `docker-compose.yaml` 기반으로 작성합니다. 그리고 서비스 애플리케이션 들은 helm 을 통해 배포됩니다. 인프라(MySQL, MongoDB, Kafka, Redis) 영역은 별도의 영역에서 실행되며, HPA 로 클러스터 내에서 관리되어야 할 서비스 애플리케이션들온 helm 을 통해 쿠버네티스에서 실행되도록 했습니다.<br/>
 
@@ -148,9 +145,9 @@ season 2 로 개발하려는 새로운 버전의 프로젝트에서는 로컬에
 
 
 # dailyfeed-app-helm
-> Project Github : https://github.com/alpha3002025/dailyfeed-app-helm
+> Project Github : [dailyfeed-app-helm](https://github.com/alpha3002025/dailyfeed-app-helm)
 
-모든 서비스 애플리케이션들의 helm 차트 들을 관리하는 리포지터리입니다. dailyfeed-installer (https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다. 개발 초창기에는 `dailyfeed-infrastructure` 내에서 인프라설치 스크립트와 애플리케이션 차트 설정/배포 스크립트들을 함께 관리하다가 유지보수의 효율성을 위해 `dailyfeed-app-helm` 이라는 별도의 github project repository 에 분리해두었고, 관리의 효율성을 위해 `dailyfeed-installer` git 프로젝트 내의 git submodule 로 등록해두었습니다.<br/>
+모든 서비스 애플리케이션들의 helm 차트 들을 관리하는 리포지터리입니다. dailyfeed-installer (https://githib.com/alpha3002025/dailyfeed-installer) 내에 git submodule 로 등록되어있습니다. 개발 초창기에는 dailyfeed-infrastructure 내에서 인프라설치 스크립트와 애플리케이션 차트 설정/배포 스크립트들을 함께 관리하다가 유지보수의 효율성을 위해 dailyfeed-app-helm 이라는 별도의 github project repository 에 분리해두었고, 관리의 효율성을 위해 `dailyfeed-installer` git 프로젝트 내의 git submodule 로 등록해두었습니다.<br/>
 <br/>
 
 ## base-chart
@@ -731,7 +728,7 @@ cronJobs:
 
 
 ## 개별 서비스 chart
-**`dailfyeed-app-helm`** 내에는  `member`, `content`, `timeline`, `search`, `activity`, `batch`, `content`, `frontend`, `image` 등 개별 서비스에 대한 chart 들이 있으며 이 개별 서비스 chart 디렉터리에서는 애플리케이션의 profile 이 `local`인지, `dev`인지에 따라 다르게 동작할수 있도록 `values-local.yaml`, `values-dev.yaml`파일들이 개별적으로 정의되어 있습니다. <br/>
+**`dailfyeed-app-helm`** 내에는  member, content, timeline, search, activity, batch, content, frontend, image 등 개별 서비스에 대한 chart 들이 있으며 이 개별 서비스 chart 디렉터리에서는 애플리케이션의 profile 이 `local`인지, `local-hybrid`, `dev`인지에 따라 다르게 동작할수 있도록 `values-local.yaml`, `values-dev.yaml`파일들이 개별적으로 정의되어 있습니다. <br/>
 <br/>
 
 > hpa-configs 라는 디렉터리 역시 보이는데, HPA 설정에 대해서는 별도의 문서에서 따로 설명하도록 하겠습니다.<br/>
@@ -769,7 +766,7 @@ drwxr-xr-x@ 16 alpha300uk  staff   512B 10월 26 16:08 istio-configs
 ```
 
 
-개별 서비스 차트들은 각각 `activity`, `batch`, `content`, `frontend`, `image`, `member`, `search`, `timeline`으로 존재합니다. 이번 문서에서는 `member`를 기준으로 개별 서비스 차트들에 대해 설명하겠습니다.<br/>
+개별 서비스 차트들은 각각 member, content, timeline, search, activity, batch, content, frontend, image 으로 존재합니다. 이번 문서에서는 `member`를 기준으로 개별 서비스 차트들에 대해 설명하겠습니다.<br/>
 
 <br/>
 

@@ -1,18 +1,18 @@
 # docker image 빌드를 github workflow 로 정의
 
 'dailyfeed' 프로젝트 내의 모든 서비스 프로젝트는 github workflow 기능을 통해 docker image 빌드를 수행할 수 있도록 했습니다. 각각의 docker build 를 수행하는 github action 페이지 들은 다음과 같습니다.
-- dailyfeed-frontend-svc : https://github.com/alpha3002025/dailyfeed-frontend-svc/actions/workflows/docker-build.yml
-- dailyfeed-member-svc : https://github.com/alpha3002025/dailyfeed-member-svc/actions/workflows/docker-build.yml
-- dailyfeed-content-svc : https://github.com/alpha3002025/dailyfeed-content-svc/actions/workflows/docker-build.yml
-- dailyfeed-timeline-svc : https://github.com/alpha3002025/dailyfeed-timeline-svc/actions/workflows/docker-build.yml
-- dailyfeed-search-svc : https://github.com/alpha3002025/dailyfeed-search-svc/actions/workflows/docker-build.yml
-- dailyfeed-image-svc : https://github.com/alpha3002025/dailyfeed-image-svc/actions/workflows/docker-build.yml
-- dailyfeed-activity-svc : https://github.com/alpha3002025/dailyfeed-activity-svc/actions/workflows/docker-build.yml 
-- dailyfeed-batch-svc : https://github.com/alpha3002025/dailyfeed-batch-svc/actions/workflows/docker-build.yml
+- [dailyfeed-frontend-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-frontend-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-member-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-member-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-content-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-content-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-timeline-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-timeline-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-search-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-search-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-image-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-image-svc/actions/workflows/docker-build.yml)
+- [dailyfeed-activity-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-activity-svc/actions/workflows/docker-build.yml) 
+- [dailyfeed-batch-svc/docker-build.yml](https://github.com/alpha3002025/dailyfeed-batch-svc/actions/workflows/docker-build.yml)
 <br/>
 <br/>
 
-# docker build 를 repository 내의 Actions 메뉴에서
+## docker build 를 repository 내의 Actions 메뉴에서
 초기 개발 시에는 `jibDockerBuild.sh`를 터미널에서 실행해서 빌드하고 push 했었습니다. 그런데 이게 시간이 지날수록 복잡해지기도 하고 언제 이미지를 빌드했는지도 기억이 안날 때도 있었고, 이 프로젝트를 clone 받는 사람에게 이미지를 빌드할 수 있는 방법에 대해 쉽게 알려줄 방법이 필요하다고 생각했습니다. 이런 이유로 github actions 를 사용하게 되었습니다.<br/>
 
 ![](./img/docker-image-build-with-github/20251231-16-12-15-1.png)
@@ -23,7 +23,7 @@ github reposotiry 페이지 ➝ `Actions` 탭 ➝ `Docker Build and Push` 메뉴
 <br/>
 
 
-# docker 이미지 확인
+## docker 이미지 확인
 빌드된 이미지는 `ghcr.io` 내에서 확인할 수 있습니다. github repository 내에서 이미지를 확인하는 방법은 다음과 같습니다.<br/>
 <br/>
 
@@ -39,8 +39,8 @@ docker 이미지 페이지로 이동하면 다음과 같이 방금 전에 빌드
 <br/>
 <br/>
 
-# workflow yaml
-## 백엔드 서비스 workflow yaml
+## workflow yaml
+### 백엔드 서비스 workflow yaml
 아래 파일은 `dailyfeed-member-svc` 를 github workflow 를 이용해 docker image 빌드를 수행하는 yaml 파일입니다. 다른 백엔드 서비스들의 workflow 파일들 모두 비슷한 구조를 띄고 있습니다. <br/>
 `docker-build.yaml`
 ```yaml
@@ -138,7 +138,7 @@ jobs:
 <br/>
 <br/>
 
-## 프론트엔드 서비스 workflow yaml
+### 프론트엔드 서비스 workflow yaml
 아래 파일은 `dailyfeed-frontend-svc` 를 github workflow 를 이용해 docker image 빌드를 수행하는 yaml 파일입니다. frontend 의 경우 미리 정의했던 `Dockerfile` 파일을 Claude Code 를 이용해서 빌드 파일을 만들었습니다.<br/>
 <br/>
 

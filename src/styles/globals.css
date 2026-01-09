@@ -4,9 +4,7 @@
   --nextra-primary-saturation: 47%;
 }
 
-.nextra-nav-container nav a svg {
-  /* Custom logo style if needed */
-}
+
 
 /* Global Code Line Styles for Viewer/Public Pages */
 .code-line {
@@ -97,4 +95,24 @@ code:not(pre code):not([class*="language-"]) {
 .codeBlockWrapper code {
   color: inherit !important;
   background-color: transparent !important;
+}
+
+/* Word Wrap for Code Blocks */
+/* Applies to both Editor preview (if using standard elements) and Viewer pages */
+pre,
+.nx-code-block>pre,
+.nextra-code-block>pre {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  /* Hide horizontal scrollbar since we wrap */
+}
+
+pre code,
+.nx-code-block>pre>code,
+.nextra-code-block>pre>code {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
